@@ -94,21 +94,53 @@ fetch('players.json')
 
     // Search functionality
     document.getElementById("search").addEventListener("input", function(e) {
-      const value = e.target.value.toLowerCase();
+  const value = e.target.value.trim().toLowerCase();
 
-      markers.forEach(marker => {
-        if (marker.playerName.includes(value) && value !== "") {
-          marker.setStyle({color: "yellow", fillColor: "yellow"});
-          map.setView(marker.getLatLng(), 1);
-          marker.openPopup();
-        } else {
-          marker.setStyle({color: "red", fillColor: "red"});
-        }
-      });
-    });
-
+  markers.forEach(marker => {
+    marker.setStyle({color: "red", fillColor: "red"});
   });
+
+  if (value === "") return;
+
+  // Try coordinate search (e.g. 320,-650)
+  const coordMatch = value.match(/^(-?\d+)[,\s]+(-?\d+)$/);
+
+  markers.forEach(marker => {
+    const latlng = marker.getLatLng();
+    const x = latlng.lng;
+    const y = latlng.lat;
+
+    let match = false;
+
+    // Full coordinate search
+    if (coordMatch) {
+      const searchX = parseInt(coordMatch[1]);
+      const searchY = parseInt(coordMatch[2]);
+      if (x === searchX && y === searchY) {
+        match = true;
+      }
+    }
+    // Single number search (X or Y)
+    else if (!isNaN(value)) {
+      const num = parseInt(value);
+      if (x === num || y === num) {
+        match = true;
+      }
+    }
+    // Name search
+    else if (marker.playerName.includes(value)) {
+      match = true;
+    }
+
+    if (match) {
+      marker.setStyle({color: "yellow", fillColor: "yellow"});
+      map.setView(marker.getLatLng(), 1);
+      marker.openPopup();
+    }
+  });
+});
 </script>
 
 </body>
+
 </html>
