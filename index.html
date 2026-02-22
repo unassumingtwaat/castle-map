@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Castle Map</title>
+
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+
+  #topbar {
+    padding: 10px;
+    background: #222;
+    color: white;
+  }
+
+  #search {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    margin-top: 8px;
+    border-radius: 6px;
+    border: none;
+  }
+
+  #map {
+    height: calc(100vh - 100px);
+    width: 100%;
+  }
+</style>
+</head>
+
+<body>
+
+<div id="topbar">
+  <h2>Castle Map</h2>
+  <input type="text" id="search" placeholder="Search player name...">
+</div>
+
+<div id="map"></div>
+
+<script>
+const mapWidth = 534;
+const mapHeight = 1066;
+
+// Create map using simple coordinate system
+const map = L.map('map', {
+  crs: L.CRS.Simple,
+  minZoom: -2
+});
+
+// Define bounds
+const bounds = [[-mapHeight, 0], [0, mapWidth]];
+
+// Add simple background grid
+const rectangle = L.rectangle(bounds, {color: "#444", weight: 1});
+rectangle.addTo(map);
+
+map.fitBounds(bounds);
+
+// Load player data
+fetch('players.json')
+  .then(response => response.json())
+  .then(players => {
+
+    const markers = [];
+
+    players.forEach(player => {
+      const marker = L.circleMarker(
+        [player.y, player.x],
+        {
+          radius: 6,
+          color: "red",
+          fillColor: "red",
+          fillOpacity: 0.8
+        }
+      )
+      .bindPopup(`<b>${player.name}</b><br>X: ${player.x}<br>Y: ${player.y}`)
+      .addTo(map);
+
+      marker.playerName = player.name.toLowerCase();
+      markers.push(marker);
+    });
+
+    // Search functionality
+    document.getElementById("search").addEventListener("input", function(e) {
+      const value = e.target.value.toLowerCase();
+
+      markers.forEach(marker => {
+        if (marker.playerName.includes(value) && value !== "") {
+          marker.setStyle({color: "yellow", fillColor: "yellow"});
+          map.setView(marker.getLatLng(), 1);
+          marker.openPopup();
+        } else {
+          marker.setStyle({color: "red", fillColor: "red"});
+        }
+      });
+    });
+
+  });
+</script>
+
+</body>
+</html>
