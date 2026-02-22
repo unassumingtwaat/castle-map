@@ -160,6 +160,8 @@
   { "name": "StillNoname", "x": 16, "y": -698 },
   { "name": "StSpike", "x": 16, "y": -706 },
   { "name": "Lord511uWhj-ZV", "x": 16, "y": -1034 },
+
+  //add LMC
   { "name": "ArkinMiguel", "x": 308, "y": -640 },
   { "name": "MadameUmbridge", "x": 315, "y": -647 },
   { "name": "Lord51kinOh-NV", "x": 318, "y": -646 },
@@ -205,5 +207,8 @@
   { "name": "Irisk", "x": 532, "y": -298 },
   { "name": "tomi1212", "x": 532, "y": -1034 },
   { "name": "bazero88", "x": 532, "y": -1046 },
-  { "name": "Lexi26", "x": 532, "y": -1052 }
+  { "name": "Lexi26", "x": 532, "y": -1052 },
+  
+  // add try
+  { "name": "Lord50NqnXP-0h", "x": 316, "y": -606 }
 ]
