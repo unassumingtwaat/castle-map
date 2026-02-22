@@ -44,7 +44,7 @@
 
 <div id="topbar">
   <h2>Castle Map</h2>
-  <input type="text" id="search" placeholder="Search player name...">
+  <input type="text" id="search" placeholder="Search player name or coordinates...">
 </div>
 
 <div id="map"></div>
@@ -61,29 +61,10 @@ const map = L.map('map', {
 
 // Define bounds
 const bounds = [[-mapHeight, 0], [0, mapWidth]];
-
-// Add simple background grid
-const rectangle = L.rectangle(bounds, {color: "#444", weight: 1});
-rectangle.addTo(map);
-
-map.fitBounds(bounds);
-
-// Load player data
-fetch('players.json')
-<script>
-const mapWidth = 534;
-const mapHeight = 1066;
-
-const map = L.map('map', {
-  crs: L.CRS.Simple,
-  minZoom: -2
-});
-
-const bounds = [[-mapHeight, 0], [0, mapWidth]];
 L.rectangle(bounds, {color: "#444", weight: 1}).addTo(map);
 map.fitBounds(bounds);
 
-// Prevent JSON caching (important!)
+// Load player data with cache-busting
 fetch('players.json?v=' + new Date().getTime())
   .then(response => response.json())
   .then(players => {
@@ -107,6 +88,7 @@ fetch('players.json?v=' + new Date().getTime())
       markers.push(marker);
     });
 
+    // Search functionality
     document.getElementById("search").addEventListener("input", function(e) {
       const value = e.target.value.trim().toLowerCase();
 
@@ -125,6 +107,7 @@ fetch('players.json?v=' + new Date().getTime())
 
         let match = false;
 
+        // Full coordinate search
         if (coordMatch) {
           const searchX = parseInt(coordMatch[1]);
           const searchY = parseInt(coordMatch[2]);
@@ -132,12 +115,14 @@ fetch('players.json?v=' + new Date().getTime())
             match = true;
           }
         }
+        // Single number search (X or Y)
         else if (!isNaN(value)) {
           const num = parseInt(value);
           if (x === num || y === num) {
             match = true;
           }
         }
+        // Name search
         else if (marker.playerName.includes(value)) {
           match = true;
         }
@@ -150,10 +135,8 @@ fetch('players.json?v=' + new Date().getTime())
       });
     });
 
-  }); // 
+  });
 </script>
 
 </body>
-
 </html>
-
